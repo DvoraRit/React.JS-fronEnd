@@ -1,32 +1,25 @@
-import React, { useState, lazy, Suspense, useContext, useEffect } from "react"
-import { Card, Button, Alert, Navbar, Nav, Form, FormControl } from "react-bootstrap"
+import React, { useState, lazy} from "react"
+import { Navbar, Nav} from "react-bootstrap"
 import { useAuth } from "../contex/AuthContext"
-import { Link, Route, useHistory, Switch } from "react-router-dom"
-import Utils from '../Utils'
-import firebase from '../firebaseApp'
-import {MoviesContext} from '../contex/MovieContext'
+import {useHistory, Switch,Route, Router } from "react-router-dom"
 import MembersComp from './Members'
 import MoviesComp from './movies'
+import PrivateRoute from "./PrivateRoute"
+import UpdateProfile from './UpdateProfile'
 import {useRoutes} from 'hookrouter'
-const MovieComp = lazy(()=>import ('./movie'))
-const routes ={
-  "/movies" :() => <MoviesComp/>,
-  "/Members" : () =><MembersComp/>
-}
+import {AuthProvider} from '../contex/AuthContext'
+import LoadingGif from './LoadingGif'
 
-export default function Dashboard() {
+export default function Dashboard(props) {
     const [error, setError] = useState("")
     const { currentUser, logout } = useAuth()
     const history = useHistory()
-
-    const match = useRoutes(routes)
     
     async function handleLogout() {
       setError("")
-  
       try {
         await logout()
-        history.push("/login")
+        history.push("/")
       } catch {
         setError("Failed to log out")
       }
@@ -34,21 +27,26 @@ export default function Dashboard() {
 
     return (
        <>
-      <Navbar bg="primary" variant="dark">
+       <div className="Dashbord">
+       <Navbar bg="primary" variant="dark">
         <Navbar.Brand href="#home">Hello {currentUser.email}</Navbar.Brand>
             <Nav className="mr-auto">
-                <Nav.Link href="/movies">Movies</Nav.Link>
+                <Nav.Link href={`${props.match.url}/movies`}>Movies</Nav.Link>
+                <Nav.Link href={`${props.match.url}/Members`}>Members</Nav.Link>
                 <Nav.Link href="/Users">User Management</Nav.Link>
-                <Nav.Link href="/Members">Members</Nav.Link>
-                <Nav.Link href="/update-profile">Update Profile</Nav.Link>
+                <Nav.Link href={`${props.match.url}/update-profile`}>Update Profile</Nav.Link>
                 <Nav.Link href="/" onClick={handleLogout}>Log Out</Nav.Link>
+                <Nav.Link href={`${props.match.url}/Loading`}>Loading</Nav.Link>
             </Nav>
-        </Navbar>
+        </Navbar>  
 
         <Switch>
-              <Route path="/movies" component={MoviesComp} />
-              <Route path="/Members" component={MembersComp} />
-        </Switch>
+          <Route path={`${props.match.url}/Members`} component={MembersComp}/>
+            <Route path={`${props.match.url}/movies`} component={MoviesComp} />
+            <Route path={`${props.match.url}/Loading`} component={LoadingGif} />
+            <PrivateRoute path={`${props.match.url}/update-profile`} component={UpdateProfile} />
+        </Switch>         
+       </div>
       </>
     )
   }
