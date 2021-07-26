@@ -8,24 +8,9 @@ import Dashboard from "./component/Dashboard"
 import Login from './component/logIn'
 import PrivateRoute from "./component/PrivateRoute"
 import ForgotPassword from './component/ForgotPassword'
-import UpdateProfile from './component/UpdateProfile'
-import {useRoutes} from 'hookrouter'
-import MembersComp from './component/Members'
-import MoviesComp from './component/movies'
-
-const routes ={
-  "/login" : () => <Login/>,
-  "/forgot-password" : () => <ForgotPassword/>,
-  "/SignUp" : () => <SignUp/>,
-  "/id*" : () => <Dashboard/>
-}
-
+import LargeMovieImg from './component/LargeMovieImg'
 
 function App() {
-  const match = useRoutes(routes)
-  /*  
-
-  */
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
@@ -35,15 +20,16 @@ function App() {
                   <AuthProvider>
                       <Switch>
                          <Route exact path="/" component={Login} />
+                         <Route exact path="/login" component={Login} />
                           <Route path="/forgot-password" component={ForgotPassword} />
                           <Route path="/SignUp" component={SignUp} />
+                          <Route path="/LargeImage" component={LargeMovieImg} />
                           <PrivateRoute  path="/Dashbord" component={Dashboard} />
                       </Switch>
                   </AuthProvider>
                
         </div>
     </Container>
-    
   );
 }
 

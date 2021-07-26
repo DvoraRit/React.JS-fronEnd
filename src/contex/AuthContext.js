@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react"
 import { auth } from "../firebaseApp"
+import firebase from '../firebaseApp'
 
 const AuthContext = React.createContext()
 
@@ -9,10 +10,12 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)//are the user still loading? means he didnt login yet
 
-  function signup(email, password) {
-    return auth.createUserWithEmailAndPassword(email, password)
+  function signup(_username, _email, _password) {
+    let obj = {userName: _username, email: _email, password:_password}
+    firebase.firestore().collection('Users').add(obj)
+    return auth.createUserWithEmailAndPassword(_email, _password)
   }
 
   function login(email, password) {
@@ -52,6 +55,7 @@ export function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword
+    //{!loading && children}
   }
 
   return (

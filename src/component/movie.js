@@ -1,46 +1,97 @@
-import Card from 'react-bootstrap/Card'
 import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
+import React from 'react'
 import Subscriptions from './Subscriptions'
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
-
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
-    },
-  }));
+import { Grid } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import {useHistory, Link} from 'react-router-dom'
+import { ButtonGroup } from 'react-bootstrap';
+import firebase from '../firebaseApp'
 
 export default function MovieComp(props)
 {
-  
-      const classes = useStyles();
-    //
-    let gens = props.Data.geners.map(item=>
-        {
-            return item+",  ";
-        })
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            flexGrow: 1,
+            padding: theme.spacing(0),
+            margin: 'auto',
+            width: 550,
+            height:270,          
+          },
+          image: {
+            width: 180,
+            height: 250,
+          },
+          img: {
+            margin: 'auto',
+            display: 'block',
+            maxWidth: '100%',
+            maxHeight: '100%',
+          },
+          button:{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            '& > *': {
+              margin: theme.spacing(1),
+            },
+          }
+        }));
 
+    const classes = useStyles()
+    const history = useHistory()
+    
+    function imgClickHandle() {
+        history.push("/LargeImage")
+    }
+
+    function deleteMovie ()
+    {
+        let movieToDel = firebase.firestore().collection('Movies').doc(props.Data.id)
+        movieToDel.delete().then(data=>
+            {
+                alert('Deleted');
+            })
+        history.push('/Dashbord')
+    }
+    
     return(
        <div>
-           <Paper elevation={3}>
-               <img src={props.Data.mediumImage} width="100pl"/>
-                <h3>{props.Data.name}, {props.Data.premiered}</h3>
-                <h5>Geners: {gens}</h5>
-                <Subscriptions movieId={props.Data.id}/>
-                <Button variant="contained">
-                    Edit
-                </Button><br/>
-            </Paper>
+           <Card className={classes.root}>
+           <CardActionArea>
+             <Grid container spacing={2}>
+                    <Grid item>
+                      <img className={classes.img} alt={props.Data.name} src={props.Data.mediumImage} />
+                    </Grid>
+                    <Grid item xs={12} sm container>
+                        <Grid item xs container direction="column" spacing={2}>
+                            <Grid item xs>
+                                <Typography gutterBottom variant="subtitle1">
+                                    {props.Data.name}
+                                </Typography>
+                                <Typography variant="body2" gutterBottom>
+                                    Geners: {props.Data.geners.map(item=>
+                                                    {
+                                                        return item+",  ";
+                                                    })}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {props.Data.premiered}
+                                </Typography>
+                                    <Subscriptions id={props.Data.id}/>
+                                <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+                                    <Button>Edit</Button>
+                                    <Button onClick={deleteMovie}>Delete</Button>
+                                 </ButtonGroup>
+                                </Grid>                               
+                        </Grid>
+                        </Grid>
+                    </Grid>
+                </CardActionArea>             
+            </Card>
             <br/>
-            
         </div>
      
     )

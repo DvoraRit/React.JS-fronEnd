@@ -2,8 +2,20 @@ import React, { useRef, useState } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
 import { useAuth } from "../contex/AuthContext"
 import { Link, useHistory } from "react-router-dom"
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+    margin: 'auto'
+  },
+  media: {
+    height: 260,
+  },
+});
 
 export default function Login() {
+  const classes = useStyles();
     const emailRef = useRef()
     const passwordRef = useRef()
     const { login } = useAuth()
@@ -18,7 +30,7 @@ export default function Login() {
         setError("")
         setLoading(true)
         await login(emailRef.current.value, passwordRef.current.value)
-        history.push("/")
+        history.push("/Dashbord")
       } catch {
         setError("Failed to log in")
       }
@@ -30,9 +42,10 @@ export default function Login() {
   
     return (
       <>
-        <Card>
+      <br/>
+        <Card className={classes.root}>
           <Card.Body>
-            <h2 className="text-center mb-4">Log In</h2>
+            <h2 className="text-center">Log In</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
               <Form.Group id="email">

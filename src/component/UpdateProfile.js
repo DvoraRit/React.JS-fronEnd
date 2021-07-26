@@ -43,7 +43,8 @@ export default function UpdateProfile() {
 
   return (
     <>
-      <Card>
+    <br/>
+      <Card style={{maxWidth:345, margin:'auto'}}>
         <Card.Body>
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -73,6 +74,7 @@ export default function UpdateProfile() {
                 placeholder="Leave blank to keep the same"
               />
             </Form.Group>
+            <br/>
             <Button disabled={loading} className="w-100" type="submit">
               Update
             </Button>
@@ -80,7 +82,7 @@ export default function UpdateProfile() {
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        <Link to="/">Cancel</Link>
+        <Link to="/Dashbord">Cancel</Link>
       </div>
     </>
   )
